@@ -1,7 +1,10 @@
 package NerdyGadgets;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -21,9 +24,9 @@ public class CheckServers {
                 try{
                     InetAddress a = InetAddress.getByName(ipAddress);
                     if(a.isReachable(2000)){
-                        System.out.println(ipAddress + " works!");
+                        System.out.println(" " + ipAddress + " works!");
                     }else {
-                        System.out.println(ipAddress + " is not reachable!");
+                        System.out.println(" " + ipAddress + " is not reachable!");
                     }
                 }catch (Exception e){
                     System.out.println(e.getMessage());
@@ -32,12 +35,15 @@ public class CheckServers {
             }
 
             try{
-                if(InetAddress.getByName("your server url").isReachable(2000)){
-                    System.out.println("Your network is reachable from the wan via " + wanIpAddress);
-                }else {
-                    System.out.println("Your network is not reachable via wan " + wanIpAddress);
-                }
-            }catch (Exception e){
+                URL url = new URL("http://" + wanIpAddress);
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+                int respCode = connection.getResponseCode();
+                System.out.println("The network is accessible via " + url);
+            }catch(UnknownHostException e){
+                System.out.println("Unknown Host!!");
+            }catch(Exception e){
                 System.out.println(e.getMessage());
             }
         }
@@ -66,7 +72,7 @@ public class CheckServers {
                 conf.setReadable(true);
                 conf.setWritable(true);
                 Files.write(Paths.get("ipAddresses.config"), lines, StandardOpenOption.CREATE);
-                System.out.println("Please fill in the config file!");
+                System.out.println("Please fill in the ipAddresses.config file!");
             }catch (IOException ef){
 
                 System.out.println(ef.getMessage());
