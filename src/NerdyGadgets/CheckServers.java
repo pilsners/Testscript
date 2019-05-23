@@ -1,6 +1,7 @@
 package NerdyGadgets;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
@@ -92,9 +93,7 @@ public class CheckServers {
             String allIpAddresses = prop.getProperty("ipAddresses");
             allIpAddresses = allIpAddresses.replaceAll(" ", "");
             String[] values = allIpAddresses.split(",");
-            for(String s : values){
-                ipAddresses.add(s);
-            }
+            ipAddresses.addAll(Arrays.asList(values));
 
             wanIpAddress = prop.getProperty("wanAddress");
 
