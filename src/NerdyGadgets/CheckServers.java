@@ -18,8 +18,11 @@ public class CheckServers {
     private String wanIpAddress;
 
     public CheckServers(){
+        /*Check if the config file exists, if so it gets the data from the config file, otherwise it will create
+        a new config */
         if(getConfig()){
             System.out.println("Checking local servers:");
+            // For each ip-address in the config file the connection is tested.
             for (String ipAddress : ipAddresses){
                 try{
                     InetAddress a = InetAddress.getByName(ipAddress);
@@ -34,6 +37,8 @@ public class CheckServers {
 
             }
 
+            /* To check if the network is reachable from outside of the network
+             a connection is created with the wan-address from the config file. */
             try{
                 URL url = new URL("http://" + wanIpAddress);
                 HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -66,7 +71,10 @@ public class CheckServers {
         try{
             is = new FileInputStream("ipAddresses.config");
         }catch (FileNotFoundException e){
-            List<String> lines = Arrays.asList("# Write all the ip addresses in this file behind 'ipAddresses=' separated by commas.", "ipAddresses=", "# The wan address is the address provided by your Internet Service Provider", "wanAddress=");
+            List<String> lines = Arrays.asList("# Write all the ip addresses in this file behind 'ipAddresses=' separated by commas.",
+                                                "ipAddresses=",
+                                                "# The wan address is the address provided by your Internet Service Provider",
+                                                "wanAddress=");
             try{
                 conf.setExecutable(true);
                 conf.setReadable(true);
